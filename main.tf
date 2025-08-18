@@ -138,29 +138,6 @@ resource "aws_security_group" "ssh" {
 }
 
 # ------------------------
-# Debian 12 AMI lookup
-# ------------------------
-data "aws_ami" "debian12" {
-  most_recent = true
-  owners      = ["136693071363"] # Debian Project
-
-  filter {
-    name   = "name"
-    values = ["debian-12-x86_64-*"]
-  }
-
-  filter {
-    name   = "architecture"
-    values = ["x86_64"]
-  }
-
-  filter {
-    name   = "virtualization-type"
-    values = ["hvm"]
-  }
-}
-
-# ------------------------
 # Instances
 # ------------------------
 locals {
@@ -181,7 +158,7 @@ locals {
 
 # Jumpbox: 1 vCPU, 512MB RAM, 10GB storage
 resource "aws_instance" "jumpbox" {
-  ami                         = data.aws_ami.debian12.id
+  ami                         = "ami-0779caf41f9ba54f0"
   instance_type               = "t3.nano" # 0.5GB RAM
   subnet_id                   = aws_subnet.public.id
   vpc_security_group_ids      = [aws_security_group.ssh.id]
@@ -200,7 +177,7 @@ resource "aws_instance" "jumpbox" {
 
 # Server: 1 vCPU, 2GB RAM, 20GB storage
 resource "aws_instance" "server" {
-  ami                         = data.aws_ami.debian12.id
+  ami                         = "ami-0779caf41f9ba54f0"
   instance_type               = "t3.small" # 2GB RAM
   subnet_id                   = aws_subnet.public.id
   vpc_security_group_ids      = [aws_security_group.ssh.id]
@@ -219,7 +196,7 @@ resource "aws_instance" "server" {
 
 # Worker nodes: 1 vCPU, 2GB RAM, 20GB storage each
 resource "aws_instance" "node_0" {
-  ami                         = data.aws_ami.debian12.id
+  ami                         = "ami-0779caf41f9ba54f0"
   instance_type               = "t3.small"
   subnet_id                   = aws_subnet.public.id
   vpc_security_group_ids      = [aws_security_group.ssh.id]
@@ -237,7 +214,7 @@ resource "aws_instance" "node_0" {
 }
 
 resource "aws_instance" "node_1" {
-  ami                         = data.aws_ami.debian12.id
+  ami                         = "ami-0779caf41f9ba54f0"
   instance_type               = "t3.small"
   subnet_id                   = aws_subnet.public.id
   vpc_security_group_ids      = [aws_security_group.ssh.id]
@@ -276,7 +253,8 @@ locals {
 
 resource "local_file" "ansible_inventory" {
   filename = "ansible-inventory.ini"
-  content  = trim(local.inventory)
+  content = trim(local.inventory, " \n\r\t")
+
 }
 
 # ------------------------
