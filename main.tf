@@ -24,7 +24,7 @@ terraform {
 variable "aws_region" {
   description = "AWS region to deploy resources into"
   type        = string
-  default     = "us-east-1"
+  default     = "us-west-2"
 }
 
 variable "key_name" {
@@ -42,7 +42,7 @@ variable "ssh_ingress_cidr" {
 variable "availability_zone" {
   description = "Availability Zone for subnet placement"
   type        = string
-  default     = "us-east-1a"
+  default     = "us-west-2a"
 }
 
 variable "ansible_ssh_user" {
